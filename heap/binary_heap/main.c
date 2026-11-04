@@ -1,4 +1,5 @@
 #include "../../base/util.h"
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +28,7 @@ void bh_init(b_heap* bh) {
     bh->count = 0;
     bh->data = NULL;
 }
+
 
 void bh_print(const b_heap *bh) {
     if (bh->count == 0) {
@@ -85,7 +87,9 @@ bool bh_insert(b_heap* bh, i64 n) {
     bh->count++;
     // now that its inserted we gotta check if tree maintains heap property which is, eavery parent is <= child
     // swap child-parent untill heap property
+    #ifdef DEBUG
     print_64_arr(bh->data, bh->count);
+    #endif
 
     while (i > 0) {
         // ok lets check parent
@@ -145,24 +149,39 @@ i64 bh_remove_min(b_heap* bh) { //because of binary heap property min is always 
     return removed;
 }
 
+void bh_empty(b_heap* bh) {
+    bh->cap = 0;
+    bh->count = 0;
+    free(bh->data);
+}
+
+// nlogn
+void bh_sort(i64* input, size_t len) {
+    b_heap *b = &(b_heap){0};
+    bh_init(b);
+    for (int i = 0; i < len; i++) {
+        bh_insert(b, input[i]);
+    }
+
+    for (int i = 0; i < len; i++) {
+        input[i] = bh_remove_min(b);
+    }
+
+    bh_empty(b);
+}
+
 int main(void) {
     b_heap *b = &(b_heap){0};
     bh_init(b);
-    bh_insert(b,4);
-    bh_insert(b,10);
-    bh_insert(b,2);
-    bh_insert(b,11);
-    bh_insert(b,5);
-    bh_insert(b,13);
-    bh_insert(b,254);
-    bh_insert(b,15);
-    bh_print(b);
-    bh_remove_min(b); //should remove 2
-    bh_print(b);
-    bh_remove_min(b); //should remove 4
-    bh_print(b);
-    bh_remove_min(b); //5
-    bh_print(b);
-
+    for (i64 i = 1; i < 24; i++) {
+        bh_insert(b, i);
+    }
+    for (i64 i = 1; i < 24; i++) {
+        assert(bh_remove_min(b) == i);
+    }
+    int64_t a[9] = {1, 42, 13, 11, 400, 42, 33, 5, 3};
+    size_t len = sizeof(a) / sizeof(int64_t);
+    bh_sort(a, len);
+    print_64_arr(a, len);
     return 0;
 }
