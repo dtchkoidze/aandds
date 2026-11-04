@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stdio.h>
 
 #ifdef DEBUG
 #define debugf(...) do {                                           \
@@ -11,6 +12,12 @@
 #define debugf(...) ((void)0)
 #endif
 
+#define swap(a,b)       \
+do {                    \
+        a ^= b;         \
+        b ^= a;         \
+        a^= b ;         \
+} while (0)             \
 
 #define print_64_arr(input, len)                                                                   \
     do {                                                                                           \
@@ -23,7 +30,6 @@
 
 #define max(a, b) (a > b ? a : b)
 #define min(a, b) (a > b ? b : a)
-
 
 // nums
 #define i64 int64_t
