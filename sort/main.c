@@ -5,18 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define print_64_arr(input, len)                                                                   \
-    do {                                                                                           \
-        printf("i64 arr:\t");                                                                      \
-        for (int i = 0; i < len; i++) {                                                            \
-            printf("%lu ", input[i]);                                                              \
-        }                                                                                          \
-        printf("\n");                                                                              \
-    } while (0)
-
-#define max(a, b) (a > b ? a : b)
-#define min(a, b) (a > b ? b : a)
-
 // in best case it's O(n) that is if its sorted already
 // worst case will be O(n2) that is desc sorted
 // hence algo is O(n2)
