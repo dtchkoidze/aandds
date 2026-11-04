@@ -64,7 +64,6 @@ void bh_print(const b_heap *bh) {
     }
 }
 
-
 bool bh_insert(b_heap* bh, i64 n) {
     debugf("inserting %lu\n", n);
 
@@ -110,10 +109,45 @@ bool bh_insert(b_heap* bh, i64 n) {
     return true;
 }
 
+i64 bh_remove_min(b_heap* bh) { //because of binary heap property min is always root e.g bh->data[0]
+    if (bh->count <= 0) {
+        return 0;
+    }
+    i64 removed = bh->data[0];
+    bh->count--;
+    if (bh->count == 0) {
+        return removed;
+    }
+    bh->data[0] = bh->data[bh->count];
+
+
+    size_t parent_idx = 0;
+    while (2*parent_idx+1 < bh->count) {
+        int left = 2*parent_idx+1;
+        int right = 2*parent_idx+2;
+
+        size_t smaller_child_idx = left; //initialize to this cuz we dont kno if there's enough count for right
+        if (right < bh->count && bh->data[right] < bh->data[left]) {
+            smaller_child_idx = right;
+        }
+
+        if (bh->data[parent_idx] <= bh->data[smaller_child_idx]) {//all cool
+            break;
+        }
+
+        bh->data[parent_idx] ^= bh->data[smaller_child_idx];
+        bh->data[smaller_child_idx] ^= bh->data[parent_idx];
+        bh->data[parent_idx] ^= bh->data[smaller_child_idx];
+
+        parent_idx = smaller_child_idx;
+    }
+
+    return removed;
+}
+
 int main(void) {
     b_heap *b = &(b_heap){0};
     bh_init(b);
-
     bh_insert(b,4);
     bh_insert(b,10);
     bh_insert(b,2);
@@ -122,6 +156,12 @@ int main(void) {
     bh_insert(b,13);
     bh_insert(b,254);
     bh_insert(b,15);
+    bh_print(b);
+    bh_remove_min(b); //should remove 2
+    bh_print(b);
+    bh_remove_min(b); //should remove 4
+    bh_print(b);
+    bh_remove_min(b); //5
     bh_print(b);
 
     return 0;
