@@ -30,6 +30,7 @@ do {                    \
 
 #define max(a, b) (a > b ? a : b)
 #define min(a, b) (a > b ? b : a)
+#define assert(c) if (!(c)) __builtin_trap()
 
 // nums
 #define i64 int64_t

@@ -1,10 +1,9 @@
 #include "../base/util.h"
 #include <assert.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h>
+#include <stdbool.h>
 
 typedef struct stack {
     void *data;
@@ -21,9 +20,9 @@ typedef struct queue {
     i64 head;
 } queue;
 
-bool queue_add(queue *q, void* elem) {
+static bool queue_add(queue *q, const void* elem) {
     if (q->cap == q->count) {
-        size_t new_cap = q->cap == 0 ? 1 : q->cap * 2;
+        const size_t new_cap = q->cap == 0 ? 1 : q->cap * 2;
 
         if (q->elem_size == 0 ||
             new_cap < q->cap ||
@@ -37,8 +36,8 @@ bool queue_add(queue *q, void* elem) {
             return false;
         }
 
-        for (size_t i = 0; i < q->count; i++) { //to normalize lay after realloc to allow modulo arithm
-            size_t old_idx = (q->head + i) % q->cap;
+        for (size_t i = 0; i < q->count; i++) { //to normalize lay after realloc to allow modulo arithmetic
+            const size_t old_idx = (q->head + i) % q->cap;
 
             memcpy(
                 (char *)tmp + i * q->elem_size,
@@ -95,7 +94,7 @@ bool stack_push(stack *s, void *elem) {
     return true;
 }
 
-bool stack_pop(stack *s, void *out) {
+static bool stack_pop(stack *s, void *out) {
     if (s->count == 0) {
         return false;
     }

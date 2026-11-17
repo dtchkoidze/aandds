@@ -1,7 +1,6 @@
 #include "../base/util.h"
 #include <string.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,7 +23,7 @@ void insertion_sort(int64_t *input, size_t len) {
 }
 
 // O(n+m)
-void merge(int64_t *a, int64_t *b, size_t a_len, size_t b_len, int64_t *c) {
+void merge(int64_t* a, int64_t* b, size_t a_len, size_t b_len, int64_t* c) {
     // merge: a,b two sorted arrays, output bigass c which is fully sorted
     #ifdef DEBUG
         printf("input array a:");
