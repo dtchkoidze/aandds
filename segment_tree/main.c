@@ -10,6 +10,10 @@
 #include <sys/types.h>
 
 
+static inline uint64_t min(uint64_t a, uint64_t b) {
+    return a < b ? a : b;
+}
+
 // assuming perfectly balanced tree that
 typedef struct segment_tree {
     uint64_t* data;
@@ -91,10 +95,33 @@ bool st_min_init(segment_tree* st, uint64_t* a, size_t len) {//this one maintain
     for (int i = leaf_start-1; i >= 0; i--) {
         uint64_t lchild = st->data[2*i+1];
         uint64_t rchild = st->data[2*i+2];
-        st->data[i] = lchild < rchild ? lchild : rchild;
+        st->data[i] = min(lchild, rchild);
     }
 
     return true;
+}
+
+uint64_t st_min_min(const segment_tree *st, size_t l, size_t r) {
+    assert(l <= r && r <= st->len);
+
+    size_t leaf_base = st->leaf_start + 1;
+    l += leaf_base;
+    r += leaf_base;
+
+    uint64_t result = UINT64_MAX;
+    while (l < r) {
+        if (l & 1) {
+            result = min(result, st->data[l - 1]);
+            ++l;
+        }
+        if (r & 1) {
+            --r;
+            result = min(result, st->data[r - 1]);
+        }
+        l /= 2;
+        r /= 2;
+    }
+    return result;
 }
 
 bool st_min_set(segment_tree* st, size_t i, uint64_t v) {
@@ -113,7 +140,7 @@ bool st_min_set(segment_tree* st, size_t i, uint64_t v) {
         real_idx = (real_idx - 1) / 2;
         uint64_t lchild = st->data[2*real_idx+1];
         uint64_t rchild = st->data[2*real_idx+2];
-        st->data[real_idx] = lchild < rchild ? lchild : rchild;
+        st->data[real_idx] = min(lchild, rchild);
     }
 
 
@@ -171,17 +198,16 @@ uint64_t st_sum(segment_tree* st, size_t l, size_t r) {
 int main(void) {
     uint64_t a[8] = {5,1,3,2,6,5,4,7};
     segment_tree st = {0};
-    st_init(&st, a, 8);
+    assert(st_init(&st, a, 8));
     st_print(&st);
-    st_set(&st, 2, 4);
+    assert(st_set(&st, 2, 4));
     st_print(&st);
     assert(st_sum(&st, 0, 2) == 6);
     assert(st_sum(&st, 1, 3) == 5);
 
-    segment_tree st_min = {0};
-    st_min_init(&st_min, a, 8);
-    st_print(&st_min);
-
+    assert(st_min_init(&st, a, 8));
+    st_print(&st);
+    assert(st_min_min(&st, 3, 7) == 2);
 
 
     return 0;
