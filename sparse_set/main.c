@@ -1,8 +1,6 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 //max size of actual set elements
 #define MAX_N 1000000
 //max value that set elem can have
@@ -53,6 +51,7 @@ bool ss_next(sparse_set* ss, uint64_t* val) {
     return true;
 }
 
+// https://research.swtch.com/sparse
 int main(void) {
     static sparse_set sss = {0};
     sparse_set* ss = &sss;
